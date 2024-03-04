@@ -7357,7 +7357,7 @@ img {
 }
 
 .themart-cta-section .cta-wrap {
-  background: url(../images/cta-bg.jpg);
+  /* background: url(../images/cta-bg.jpg); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

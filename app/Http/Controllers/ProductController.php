@@ -52,7 +52,7 @@ class ProductController extends Controller
             'subcategory_id' => $request->subcategory,
             'brand_id' => $request->brand,
             'product_name' => $request->product_name,
-            'price' => $request->price,
+            // 'price' => $request->price,
             'discount' => $request->discount,
             'after_discount' => $request->price - ($request->price / 100 * $request->discount),
             'product_type' => $request->product_type,

@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
@@ -78,4 +80,14 @@ Route::get('/variation', [InventoryController::class, 'variation'])->name('varia
 Route::post('/variation/add_color', [InventoryController::class, 'add_color'])->name('add.color');
 Route::post('/variation/add_size', [InventoryController::class, 'add_size'])->name('add.size');
 
+//banner
+Route::get('/banner', [BannerController::class, 'banner'])->name('banner');
+Route::post('/banner/add', [BannerController::class, 'banner_add'])->name('add.banner.slider');
+Route::get('/banner/status/{id}', [BannerController::class, 'banner_status'])->name('banner.status');
+Route::get('/banner/delete/{id}', [BannerController::class, 'banner_delete'])->name('banner.delete');
+
+//Newsletter 
+Route::get('/newsletter' , [NewsletterController::class, 'newsletter'])->name('newsletter');
+Route::post('/newsletter/update' , [NewsletterController::class, 'newsletter_update'])->name('newsletter.update');
+Route::post('/newsletter/store' , [NewsletterController::class, 'newsletter_store'])->name('newsletter.store');
 require __DIR__.'/auth.php';

@@ -17,4 +17,5 @@ class Inventory extends Model
     function rel_to_product(){
         return $this->belongsTo(Products::class, 'product_id');
     }
+
 }

@@ -51,10 +51,12 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="price">Price </label>
-                                <input type="number" class="form-control" id="price" name="price" placeholder="Price">
-                            </div>
+                            <fieldset disabled>
+                                <div class="form-group">
+                                    <label for="price">Price </label>
+                                    <input type="number" class="form-control" id="price" name="price" placeholder="fill this input leter">
+                                </div>
+                            </fieldset>
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">

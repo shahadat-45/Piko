@@ -20,7 +20,7 @@
                                     <thead>
                                         <tr role="row">
                                             <th class="sorting_asc" tabindex="0" aria-controls="dataTableExample" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending">Name</th>
-                                            <th class="sorting" tabindex="0" aria-controls="dataTableExample" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending">Price</th>
+                                            {{-- <th class="sorting" tabindex="0" aria-controls="dataTableExample" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending">Price</th> --}}
                                             <th class="sorting" tabindex="0" aria-controls="dataTableExample" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Discount</th>
                                             <th class="sorting" tabindex="0" aria-controls="dataTableExample" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending">preview image</th>
                                             <th class="sorting" tabindex="0" aria-controls="dataTableExample" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending">Photo gellery</th>
@@ -31,7 +31,7 @@
                                         @foreach ($products as $product)                                            
                                             <tr>
                                                 <td class="sorting_1">{{ $product->product_name }}</td>
-                                                <td>{{ $product->price }}</td>
+                                                {{-- <td>{{ $product->price }}</td> --}}
                                                 <td>{{ $product->discount }}%</td>
                                                 <td><img class="img-xs rounded-circle" src="{{ asset('uploads/product') }}/{{ $product->thumbnail }}" alt="{{ $product->thumbnail }}"></td>
                                                 <td>

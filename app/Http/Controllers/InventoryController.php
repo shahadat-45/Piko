@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Color;
 use App\Models\Inventory;
+use App\Models\Products;
 use App\Models\Size;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -47,15 +48,30 @@ class InventoryController extends Controller
         ]);
     }
     function inventory_add(Request $request){
-        if(Inventory::where('color_id', $request->color)->where('size_id', $request->size)->exists()){
-            Inventory::where('color_id', $request->color)->where('size_id', $request->size)->increment('quantity', $request->quantity);
+        $discount = Products::find($request->product_id)->discount;
+        if(Inventory::where('color_id', $request->color)->where('size_id', $request->size)->where('product_id', $request->product_id)->exists()){
+            Inventory::where('color_id', $request->color)->where('size_id', $request->size)->where('product_id', $request->product_id)->increment('quantity', $request->quantity);
         }
         else{
+            $request->validate([
+                'color' => 'required',
+                'size' => 'required',
+                'new_price' => 'required',
+                'quantity' => 'required',
+            ],
+            [
+                'color.required' => 'Color is required',
+                'size.required' => 'Size is required',
+                'new_price.required' => 'Price is required',
+                'quantity.required' => 'Quantity is required',
+            ],
+        );
             Inventory::insert([
                 'product_id' => $request->product_id,
                 'color_id' => $request->color,
                 'size_id' => $request->size,
                 'new_price' => $request->new_price,
+                'after_discount' => round($request->new_price - ($request->new_price / 100 * $discount)),
                 'quantity' => $request->quantity,
                 'created_at' => Carbon::now(),
             ]);

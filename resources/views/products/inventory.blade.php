@@ -26,7 +26,7 @@
                                 <th>{{ $inventory->rel_to_color->color_name }}</th>
                                 <td>{{ $inventory->rel_to_size->size }}</td>
                                 <td>{{ $inventory->new_price }}</td>
-                                <td>{{ $inventory->new_price - ($inventory->new_price / 100 * $inventory->rel_to_product->discount) }}</td>
+                                <td>{{ $inventory->after_discount }}</td>
                                 <td>{{ $inventory->quantity }}</td>
                                 <td><a href="{{ route('inventory.delete', $inventory->id) }}"><button type="button" class="btn btn-danger btn-icon">
                                     <i data-feather="trash"></i>
@@ -54,6 +54,9 @@
                                 <option value="{{ $color->id }}">{{ $color->color_name }}</option>
                                 @endforeach
                             </select>
+                            @error('color_id')
+                                <strong class="text-danger">{{ $message }}</strong>                                
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label>Select Size</label>
@@ -63,15 +66,24 @@
                                 <option value="{{ $size->id }}">{{ $size->size }}</option>
                                 @endforeach
                             </select>
+                            @error('size_id')
+                                <strong class="text-danger">{{ $message }}</strong>                                
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label>New Price</label>
                             <input type="number" name="new_price" class="form-control form-control-lg" placeholder="old price - {{ App\Models\Products::find($product_id)->price }}"/>
+                            @error('new_price')
+                                <strong class="text-danger">{{ $message }}</strong>                                
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label>Quantity</label>
                             <input type="number" name="quantity" class="form-control form-control-lg" placeholder="add stock quantity"/>
                             <input type="hidden" name="product_id" value="{{ $product_id }}"/>
+                            @error('quantity')
+                                <strong class="text-danger">{{ $message }}</strong>                                
+                            @enderror
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success">Insert</button>

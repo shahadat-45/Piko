@@ -4,42 +4,19 @@
 <div class="wpo-hero-slider">
     <div class="container container-fluid-sm">
         <div class="hero-slider">
+            @foreach ($banners as $banner)
             <div class="hero-slider-item">
                 <div class="slider-bg">
-                    <img src="{{ asset('TheMart') }}/assets/images/slider/slide-1.jpg" alt="">
+                    <img src="{{ asset('uploads') }}/theMart/banner/{{ $banner->image }}" alt="">
                 </div>
                 <div class="slider-content">
                     <div class="slide-title">
-                        <h2>Trendy & Unique
-                            Collection</h2>
+                        <h2>{{$banner->title}}</h2>
                     </div>
-                    <a class="theme-btn" href="product.html">Shop Now</a>
+                    <a class="theme-btn" href="{{ $banner->link }}">Shop Now</a>
                 </div>
             </div>
-            <div class="hero-slider-item">
-                <div class="slider-bg">
-                    <img src="{{ asset('TheMart') }}/assets/images/slider/slide-2.jpg" alt="">
-                </div>
-                <div class="slider-content">
-                    <div class="slide-title">
-                        <h2>Trendy & Unique
-                            Collection</h2>
-                    </div>
-                    <a class="theme-btn" href="product.html">Shop Now</a>
-                </div>
-            </div>
-            <div class="hero-slider-item">
-                <div class="slider-bg">
-                    <img src="{{ asset('TheMart') }}/assets/images/slider/slide-3.jpg" alt="">
-                </div>
-                <div class="slider-content">
-                    <div class="slide-title">
-                        <h2>Trendy & Unique
-                            Collection</h2>
-                    </div>
-                    <a class="theme-btn" href="product.html">Shop Now</a>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
     <ul class="hero-social">
@@ -155,8 +132,8 @@
                                 <span>130</span>
                             </div>
                             <div class="price">
-                                <span class="present-price">&#2547;{{ $product->after_discount }}</span>
-                                <del class="old-price">&#2547;{{ $product->price }}</del>
+                                <span class="present-price">&#2547;{{ $product->rel_to_inventory->first()->after_discount }}</span>
+                                <del class="old-price">&#2547;{{ $product->rel_to_inventory->first()->new_price }}</del>
                             </div>
                             <div class="shop-btn">
                                 <a class="theme-btn-s2" href="product.html">Shop Now</a>
@@ -678,28 +655,34 @@
 <!-- end of themart-highlight-product-section -->
 
 <!-- start of themart-cta-section -->
-<section class="themart-cta-section section-padding">
+<section class="themart-cta-section section-padding" id="newsletter">
     <div class="container">
-        <div class="cta-wrap">
+           <div class="cta-wrap" style="background: url({{ asset('uploads') }}/theMart/{{ App\Models\Newsletter::find(1)->image }})">
             <div class="row">
                 <div class="col-lg-6 col-md-8 col-12">
                     <div class="cta-content">
-                        <h2>Subscribe Our Newsletter & <br>
-                            Get 30% Discounts For Next Order</h2>
-                        <form>
+                        <h2 >{!! App\Models\Newsletter::find(1)->title !!}</h2>
+                        <form method="POST" action="{{ route('newsletter.store') }}">
+                            @csrf
                             <div class="input-1">
-                                <input type="email" class="form-control" placeholder="Your Email..."
+                                <input type="email" name="newsletter" class="form-control" placeholder="Your Email..."
                                     required="">
+                                    @error('newsletter')
+                                        <strong class="text-danger">{{ $message }}</strong>
+                                    @enderror
                                 <div class="submit clearfix">
                                     <button class="theme-btn-s2" type="submit">Subscribe</button>
                                 </div>
                             </div>
+                            @if (session('email_submited'))
+                                <strong class="text-success">{{ session('email_submited') }}</strong>
+                            @endif
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
+        
     </div>
 </section>
 <!-- end of themart-cta-section -->
