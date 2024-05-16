@@ -54,7 +54,7 @@ class ProductController extends Controller
             'product_name' => $request->product_name,
             // 'price' => $request->price,
             'discount' => $request->discount,
-            'after_discount' => $request->price - ($request->price / 100 * $request->discount),
+            // 'after_discount' => $request->price - ($request->price / 100 * $request->discount),
             'product_type' => $request->product_type,
             'short_desp' => $request->short_desp,
             'long_desp' => $request->long_desp,
@@ -81,6 +81,7 @@ class ProductController extends Controller
     }
 
     function product_list(){
+        // echo $request->show;
         $products = Products::all();
         $gallery = Gallery::all();
         return view('products.product_list', [
@@ -109,5 +110,18 @@ class ProductController extends Controller
         }
         Products::find($id)->delete();
         return back()->with('deleted', 'Product deleted successfully');
+    }
+    function product_show(Request $request){
+        $id = $request->show;
+        if (Products::find($id)->product_type == 1) {
+            Products::find($id)->update([
+                'product_type' => 0,
+            ]);
+        }else{
+            Products::find($id)->update([
+                'product_type' => 1,
+            ]);
+        }
+        return back();
     }
 }

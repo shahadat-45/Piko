@@ -114,15 +114,15 @@
         </div>
         <div class="product-wrap">
             <div class="row">
-                @foreach (App\Models\Products::all() as $product)                    
+                @foreach (App\Models\Products::where('product_type', 1)->take(8)->get() as $product)                    
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                     <div class="product-item">
                         <div class="image">
-                            <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="" style="object-fit: cover">
+                            <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="" style="object-fit: contain" height="175px" width="264px">
                             <div class="tag new">New</div>
                         </div>
                         <div class="text">
-                            <h2><a href="product-single.html">{{ $product->product_name }}</a></h2>
+                            <h2><a href="{{ route('product.details' , $product->slug) }}">{{ $product->product_name }}</a></h2>
                             <div class="rating-product">
                                 <i class="fi flaticon-star"></i>
                                 <i class="fi flaticon-star"></i>
@@ -132,11 +132,11 @@
                                 <span>130</span>
                             </div>
                             <div class="price">
-                                <span class="present-price">&#2547;{{ $product->rel_to_inventory->first()->after_discount }}</span>
-                                <del class="old-price">&#2547;{{ $product->rel_to_inventory->first()->new_price }}</del>
+                                <span class="present-price">&#2547;{{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
+                                <del class="old-price">&#2547;{{ $product->rel_to_inventory->first()->new_price ?? '' }}</del>
                             </div>
                             <div class="shop-btn">
-                                <a class="theme-btn-s2" href="product.html">Shop Now</a>
+                                <a class="theme-btn-s2" href="{{ route('product.details' , $product->slug) }}">Shop Now</a>
                             </div>
                         </div>
                     </div>

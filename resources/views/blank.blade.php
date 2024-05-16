@@ -167,13 +167,13 @@
           <li class="nav-item">
             <a class="nav-link"  data-toggle="collapse" href="#charts" role="button" aria-expanded="false" aria-controls="charts">
               <i class="link-icon" data-feather="pie-chart"></i>
-              <span class="link-title">Charts</span>
+              <span class="link-title">Customer</span>
               <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
             <div class="collapse" id="charts">
               <ul class="nav sub-menu">
                 <li class="nav-item">
-                  <a href="../../pages/charts/apex.html" class="nav-link">Apex</a>
+                  <a href="{{ route('orders') }}" class="nav-link">Orders</a>
                 </li>
                 <li class="nav-item">
                   <a href="../../pages/charts/chartjs.html" class="nav-link">ChartJs</a>
@@ -196,13 +196,13 @@
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#tables" role="button" aria-expanded="false" aria-controls="tables">
               <i class="link-icon" data-feather="layout"></i>
-              <span class="link-title">Table</span>
+              <span class="link-title">Coupons</span>
               <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
             <div class="collapse" id="tables">
               <ul class="nav sub-menu">
                 <li class="nav-item">
-                  <a href="../../pages/tables/basic-table.html" class="nav-link">Basic Tables</a>
+                  <a href="{{ route('coupon') }}" class="nav-link">Coupon</a>
                 </li>
                 <li class="nav-item">
                   <a href="../../pages/tables/data-table.html" class="nav-link">Data Table</a>
@@ -554,7 +554,7 @@
 											</a>
 										</li>
 										<li class="nav-item">
-											<a href="{{ Route('user.logout') }}" class="nav-link">
+											<a href="{{ Route('logout') }}" class="nav-link">
 												<i data-feather="log-out"></i>
 												<span>Log Out</span>
 											</a>

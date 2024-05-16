@@ -15,4 +15,7 @@ class HomeController extends Controller
         Auth::logout();
         return redirect('/login');
     }
+    function invoice(){
+        return view('customer.Invoice');
+    }
 }

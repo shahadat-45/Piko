@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Products extends Model
 {
     use HasFactory;
+    protected $fillable = ['product_type'];
 
     function rel_to_ctg(){
         return $this->belongsTo(Category::class, 'category_id');

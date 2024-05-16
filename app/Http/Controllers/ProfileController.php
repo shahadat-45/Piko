@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Billing;
+use App\Models\OrderedProduct;
+use App\Models\Orders;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,5 +60,25 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+    function customer_orders(){
+        $myorders = Orders::where('customer_id' , Auth::guard('customer')->id())->latest()->get();
+        return view('themart.customer_order' , [
+            'myorders' => $myorders,
+        ]);
+    }
+    function download_invoice($id){
+        $order_info = Orders::find($id);
+        $bill_info = Billing::where('order_id' , $order_info->order_id)->first();
+        $orderProduct = OrderedProduct::where('order_id' , $order_info->order_id)->get();
+        $order_id = $order_info->order_id;
+        $pdf = Pdf::loadView('customer.invoice-download', [
+            'order_info' => $order_info,
+            'bill_info' => $bill_info,
+            'orderProduct' => $orderProduct,
+            'order_id' => $order_id,
+        ]);
+     
+        return $pdf->download('invoice.pdf');
     }
 }

@@ -22,6 +22,7 @@
     <link href="{{ asset('TheMart') }}/assets/css/jquery.fancybox.css" rel="stylesheet">
     <link href="{{ asset('TheMart') }}/assets/css/odometer-theme-default.css" rel="stylesheet">
     <link href="{{ asset('TheMart') }}/assets/sass/style.css" rel="stylesheet">
+    @yield('mart_header')
 </head>
 
 <body>
@@ -93,7 +94,7 @@
                     <div class="row align-items-center">
                         <div class="col-lg-2">
                             <div class="navbar-header">
-                                <a class="navbar-brand" href="index.html"><img src="{{ asset('TheMart') }}/assets/images/logo.svg"
+                                <a class="navbar-brand" href="{{ url('/') }}"><img src="{{ asset('TheMart') }}/assets/images/logo.svg"
                                         alt="logo"></a>
                             </div>
                         </div>
@@ -123,7 +124,24 @@
                                 <ul>
                                     <li><a href="compare.html"><i class="fi flaticon-right-and-left"></i><span>Compare</span></a>
                                     </li>
-                                    <li><a href="login.html"><i class="fi flaticon-user-profile"></i><span>Login</span></a></li>
+                                    <li class="d-flex">
+                                        <a>
+                                            @auth('customer')
+                                            @if(Auth::guard('customer')->user()->photo == NULL)
+                                            <a class="ps-0" href="{{ route('user.profile') }}" style="cursor: pointer"><img src="{{ Avatar::create(Auth::guard('customer')->user()->name)->toBase64() }}" alt="profile_img" style="border-radius: 50% ;" height="30px" width="30px" class="me-3"></a>
+                                            @else                                            
+                                            <a class="ps-0" href="{{ route('user.profile') }}" style="cursor: pointer"><img src="{{ asset('uploads') }}/customer/{{ Auth::guard('customer')->user()->photo }}" alt="profile_img" style="border-radius: 50% ;" height="30px" width="30px" class="me-3"></a>
+                                            @endif
+                                            @else    
+                                            <a href="{{ route('user.profile') }}"><i class="fi flaticon-user-profile"></i></a>
+                                            @endauth
+                                            @auth('customer')
+                                            <a id="login-logout-border" href="{{ route('user.logout') }}"><span class="p-1">Logout</span></a>
+                                            @else
+                                            <a id="login-logout-border" href="{{ route('user.login') }}"><span>Login</span></a>
+                                            @endauth
+                                        </a>
+                                    </li>
                                     <li>
                                         <div class="header-wishlist-form-wrapper">
                                             <button class="wishlist-toggle-btn"> <i class="fi flaticon-heart"></i>
@@ -180,40 +198,38 @@
                                     <li>
                                         <div class="mini-cart">
                                             <button class="cart-toggle-btn"> <i class="fi flaticon-add-to-cart"></i>
-                                                <span class="cart-count">2</span></button>
+                                                <span class="cart-count">{{ App\Models\Cart::where('customer_id' , Auth::guard('customer')->id())->count() }}</span></button>
                                             <div class="mini-cart-content">
                                                 <button class="mini-cart-close"><i class="ti-close"></i></button>
                                                 <div class="mini-cart-items">
+                                                    @php
+                                                        $sub_total = 0;
+                                                    @endphp
+                                                    @foreach (App\Models\Cart::where('customer_id' , Auth::guard('customer')->id())->get() as $cart)
                                                     <div class="mini-cart-item clearfix">
                                                         <div class="mini-cart-item-image">
-                                                            <a href="product.html"><img src="{{ asset('TheMart') }}/assets/images/cart/img-1.jpg" alt></a>
+                                                            <a href="{{ route('product.details' , $cart->rel_to_product->slug) }}"><img src="{{ asset('uploads') }}/product/{{ $cart->rel_to_product->thumbnail }}" alt></a>
                                                         </div>
                                                         <div class="mini-cart-item-des">
-                                                            <a href="product.html">Stylish Pink Coat</a>
-                                                            <span class="mini-cart-item-price">$150 x 1</span>
-                                                            <span class="mini-cart-item-quantity"><a href="#"><i
-                                                                        class="ti-close"></i></a></span>
+                                                            <a href="{{ route('product.details' , $cart->rel_to_product->slug) }}">{{ $cart->rel_to_product->product_name }}</a>
+                                                            <span class="mini-cart-item-price">{{ $cart->rel_to_inventory->where('color_id' , $cart->color_id)->where('size_id' , $cart->size_id)->first()->after_discount }} x {{ $cart->quantity }}</span>
+                                                            <span class="mini-cart-item-quantity"><a href="{{ route('delete.cart' , $cart->id) }}"><i class="ti-close"></i></a></span>
                                                         </div>
-                                                    </div>
-                                                    <div class="mini-cart-item clearfix">
-                                                        <div class="mini-cart-item-image">
-                                                            <a href="product.html"><img
-                                                                    src="{{ asset('TheMart') }}/assets/images/cart/img-2.jpg"
-                                                                    alt></a>
-                                                        </div>
-                                                        <div class="mini-cart-item-des">
-                                                            <a href="product.html">Blue Bag</a>
-                                                            <span class="mini-cart-item-price">$120 x 2</span>
-                                                            <span class="mini-cart-item-quantity"><a href="#"><i
-                                                                        class="ti-close"></i></a></span>
-                                                        </div>
-                                                    </div>
+                                                    </div>    
+                                                    @php
+                                                        $sub_total += $cart->rel_to_inventory->where('color_id' , $cart->color_id)->where('size_id' , $cart->size_id)->first()->after_discount * $cart->quantity ;
+                                                    @endphp                                                
+                                                    @endforeach
                                                 </div>
                                                 <div class="mini-cart-action clearfix">
                                                     <span class="mini-checkout-price">Subtotal:
-                                                        <span>$390</span></span>
+                                                        <span>${{ $sub_total }}</span></span>
                                                     <div class="mini-btn">
-                                                        <a href="cart.html" class="view-cart-btn">View Cart</a>
+                                                        @if (Auth::guard('customer')->check())
+                                                        <a href="{{ route('cart' , Auth::guard('customer')->id()) }}" class="view-cart-btn">View Cart</a>
+                                                        @else    
+                                                        <a href="{{ route('user.login') }}" class="view-cart-btn">Login Yourself</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -270,7 +286,7 @@
                                     <button class="menu-close"><i class="ti-close"></i></button>
                                     <ul class="nav navbar-nav mb-2 mb-lg-0">
                                         <li class="menu-item-has-children">
-                                            <a href="#">Home</a>
+                                            <a href="{{ url('/') }}">Home</a>
                                         </li>
                                         <li><a href="about.html">About</a></li>
                                         <li class="menu-item-has-children">
@@ -404,7 +420,7 @@
         <!-- end of wpo-site-footer-section -->
 
         <!-- start wpo-newsletter-popup-area-section -->
-        <section class="wpo-newsletter-popup-area-section">
+        {{-- <section class="wpo-newsletter-popup-area-section">
             <div class="wpo-newsletter-popup-area">
                 <div class="wpo-newsletter-popup-ineer">
                     <button class="btn newsletter-close-btn"><i class="ti-close"></i></button>
@@ -429,7 +445,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
         <!-- end wpo-newsletter-popup-area-section -->
 
     </div>
@@ -445,5 +461,6 @@
     <script src="{{ asset('TheMart') }}/assets/js/jquery-plugin-collection.js"></script>
     <!-- Custom script for this template -->
     <script src="{{ asset('TheMart') }}/assets/js/script.js"></script>
+    @yield('footer_script')
 </body>
 </html>

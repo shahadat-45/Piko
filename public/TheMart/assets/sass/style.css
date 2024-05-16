@@ -7355,7 +7355,14 @@ img {
     padding-top: 40px;
   }
 }
-
+#login-logout-border:hover{
+  cursor: pointer;
+  border: 1px solid #FED700;
+}
+#login-logout-border{
+  width: 60px;
+  padding-left: 0px;
+}
 .themart-cta-section .cta-wrap {
   /* background: url(../images/cta-bg.jpg); */
   background-position: center;
