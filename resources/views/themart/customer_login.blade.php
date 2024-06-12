@@ -72,6 +72,15 @@
                                     <h2>Login</h2>
                                     <p>Sign into your pages account</p>
                                 </div>
+                                @if (session('pass_updated'))
+                                <div class="alert alert-success" role="alert">{{ session('pass_updated') }}</div>
+                                @elseif (session('verified'))
+                                <div class="alert alert-success" role="alert">{{ session('verified') }}</div>
+                                @elseif (session('not_verified'))
+                                <div class="alert alert-warning" role="alert">
+                                    {{ session('not_verified') }} <a href="{{ route('email.verify.req') }}" class="alert-link">Send another request</a>. to verify your email.
+                                </div>
+                                @endif
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-12">
                                         <label>Email</label>
@@ -97,7 +106,7 @@
                                         <div class="check-box-wrap">
                                             
                                             <div class="forget-btn">
-                                                <a href="forgot.html">Forgot Password?</a>
+                                                <a href="{{ route('pass.reset.req') }}">Forgot Password?</a>
                                             </div>
                                         </div>
                                     </div>
@@ -107,11 +116,14 @@
                                 </div>
                                 <h4 class="or"><span>OR</span></h4>
                                 <ul class="wpo-socialLoginBtn">
-                                    <li><button class="bg-danger" tabindex="0" type="button"><span><i
-                                                    class="ti-google"></i></span></button></li>
+                                    <li><a href="{{ route('google.redirect') }}">
+                                        <button class="bg-danger" tabindex="0" type="button">
+                                            <span><i class="ti-google"></i></span>
+                                        </button></a>
+                                    </li>
                                     <li>
-                                        <button class="bg-secondary" tabindex="0" type="button"><span><i
-                                                    class="ti-github"></i></span></button>
+                                        <a href="{{ route('github.redirect') }}"><button class="bg-secondary" tabindex="0" type="button"><span><i
+                                                    class="ti-github"></i></span></button></a>
                                     </li>
                                 </ul>
                                 <p class="subText">Don't have an account? <a href="{{ route('user.register') }}">Create free

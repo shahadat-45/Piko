@@ -1,6 +1,8 @@
 @extends('themart.theMartBlank')
-@section('martContent')
-    
+@section('mart_header')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+@endsection
+@section('martContent')    
 <div class="wpo-hero-slider">
     <div class="container container-fluid-sm">
         <div class="hero-slider">
@@ -53,7 +55,7 @@
                     <img src="{{ asset('uploads') }}/category/{{ $category->image }}" width="140" height="100" style="object-fit: cover">
                 </div>
                 <div class="text">
-                    <h2><a href="product.html">{{ $category->name }}</a></h2>
+                    <h2><a href="product.html">{{ Str::of($category->name)->limit(11) }}</a></h2>
                 </div>
             </div>
             @endforeach
@@ -74,26 +76,26 @@
         </div>
         <div class="row">
             <div class="col-lg-6 col-md-12">
-                <div class="offer-wrap">
+                <div class="offer-wrap" style="background: url({{ asset('uploads') }}/theMart/{{ $offers->photo }});">
                     <div class="content">
-                        <h2>Stylish Coat</h2>
-                        <span class="offer-price">$80</span>
-                        <del>$150</del>
+                        <h2>{{ $offers->title }}</h2>
+                        <span class="offer-price">${{ $offers->dis_price }}</span>
+                        <del>${{ $offers->price }}</del>
 
                         <div class="count-up">
                             <div id="clock"></div>
                         </div>
-                        <a class="theme-btn-s2" href="product.html">Shop Now</a>
+                        <a class="theme-btn-s2" href="{{ $offers->product_link }}">Shop Now</a>
                     </div>
 
                 </div>
             </div>
             <div class="col-lg-6 col-md-12">
-                <div class="banner-two-wrap">
+                <div class="banner-two-wrap" style="background: url({{ asset('uploads') }}/theMart/{{ $offers2->photo }});">
                     <div class="text">
-                        <h2>New Year Sale</h2>
-                        <h4>Up To 70% Off</h4>
-                        <a class="theme-btn-s2" href="product.html">Shop Now</a>
+                        <h2>{{ $offers2->title }}</h2>
+                        <h4>{{ $offers2->sub_title }}</h4>
+                        <a class="theme-btn-s2" href="{{ $offers2->product_link }}">Shop Now</a>
                     </div>
                 </div>
             </div>
@@ -123,13 +125,25 @@
                         </div>
                         <div class="text">
                             <h2><a href="{{ route('product.details' , $product->slug) }}">{{ $product->product_name }}</a></h2>
+                            @php
+                                $avg = 0;
+                                $reviews = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->latest()->get();
+                                $total_star = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->sum('star');
+                                if ($reviews->count() != 0) {
+                                    $avg = $total_star / $reviews->count() ;
+                                }
+                                else {
+                                    $avg = 0;
+                                }
+                            @endphp
                             <div class="rating-product">
+                                @if ($avg != 0)
+                                 @for ($i=1; $i<=$avg; $i++)                                    
                                 <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>130</span>
+                                @endfor
+                                @else
+                                @endif
+                                <span>{{ $reviews->count() }}</span>
                             </div>
                             <div class="price">
                                 <span class="present-price">&#2547;{{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
@@ -655,35 +669,27 @@
 <!-- end of themart-highlight-product-section -->
 
 <!-- start of themart-cta-section -->
-<section class="themart-cta-section section-padding" id="newsletter">
-    <div class="container">
-           <div class="cta-wrap" style="background: url({{ asset('uploads') }}/theMart/{{ App\Models\Newsletter::find(1)->image }})">
-            <div class="row">
-                <div class="col-lg-6 col-md-8 col-12">
-                    <div class="cta-content">
-                        <h2 >{!! App\Models\Newsletter::find(1)->title !!}</h2>
-                        <form method="POST" action="{{ route('newsletter.store') }}">
-                            @csrf
-                            <div class="input-1">
-                                <input type="email" name="newsletter" class="form-control" placeholder="Your Email..."
-                                    required="">
-                                    @error('newsletter')
-                                        <strong class="text-danger">{{ $message }}</strong>
-                                    @enderror
-                                <div class="submit clearfix">
-                                    <button class="theme-btn-s2" type="submit">Subscribe</button>
-                                </div>
-                            </div>
-                            @if (session('email_submited'))
-                                <strong class="text-success">{{ session('email_submited') }}</strong>
-                            @endif
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-</section>
+    @include('themart.newsletter')
 <!-- end of themart-cta-section -->
+@endsection
+@section('footer_script')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @if (isset($offers->time))
+            let countdownDate = "{{ $offers->time }}";
+        @else
+            let countdownDate = "default-date-if-needed"; // Provide a default date if needed
+        @endif
+
+        if ($("#clock").length) {
+            $('#clock').countdown('{{ $offers->time }}', function(event) {
+                var $this = $(this).html(event.strftime('' +
+            '<div class="box"><div><div class="time">%D</div> <span>Days</span> </div></div>' +
+            '<div class="box"><div><div class="time">%H</div> <span>Hours</span> </div></div>' +
+            '<div class="box"><div><div class="time">%M</div> <span>Mins</span> </div></div>' +
+            '<div class="box"><div><div class="time">%S</div> <span>Secs</span> </div></div>'));
+            });
+        }
+    });
+</script>
 @endsection

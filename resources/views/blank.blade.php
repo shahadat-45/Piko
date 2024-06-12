@@ -156,10 +156,13 @@
                   <a href="{{ route('newsletter') }}" class="nav-link">Newsletter</a>
                 </li>
                 <li class="nav-item">
-                  <a href="../../pages/forms/editors.html" class="nav-link">Editors</a>
+                  <a href="{{ route('exciting.offer') }}" class="nav-link">Exciting Offers</a>
                 </li>
                 <li class="nav-item">
-                  <a href="../../pages/forms/wizard.html" class="nav-link">Wizard</a>
+                  <a href="{{ route('faq.list') }}" class="nav-link">FAQ Page</a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('about.page') }}" class="nav-link">About Page</a>
                 </li>
               </ul>
             </div>

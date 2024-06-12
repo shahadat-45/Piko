@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\About;
 use App\Models\Banner;
 use App\Models\Cart;
 use App\Models\Country;
+use App\Models\ExcitingOffers1;
+use App\Models\ExcitingOffers2;
+use App\Models\Faq;
 use App\Models\Gallery;
 use App\Models\Inventory;
 use App\Models\Newsletter;
@@ -15,9 +19,13 @@ use Illuminate\Http\Request;
 class FrontendController extends Controller
 {
     function welcome(){
-        $banner = Banner::all();        
+        $banner = Banner::all();
+        $offer = ExcitingOffers1::find(1);
+        $offer2 = ExcitingOffers2::find(1);
         return view('themart.themart' , [
             'banners' =>  $banner,
+            'offers' =>  $offer,
+            'offers2' =>  $offer2,
         ]);
     }
     function dropzone(){
@@ -70,6 +78,21 @@ class FrontendController extends Controller
         $countries = Country::all();
         return view('themart.checkout',[
             'countries' => $countries,
+        ]);
+    }
+    function shop(){
+        return view('themart.shop');
+    }
+    function about(){
+        $data = About::find(1);
+        return view('themart.about',[
+            'data' => $data,
+        ]);
+    }
+    function faq(){        
+        $faqs = Faq::all();
+        return view('themart.faq',[
+            'faqs' => $faqs,
         ]);
     }
 }

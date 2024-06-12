@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\cartController;
@@ -7,6 +8,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerRegister;
+use App\Http\Controllers\ExcitingOffers;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
@@ -14,6 +17,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -31,6 +35,9 @@ Route::post('/product/get_size', [FrontendController::class, 'get_size']);
 Route::post('product/get_stock', [FrontendController::class, 'get_stock']);
 Route::get('/product/details/{slug}', [FrontendController::class, 'product_details'])->name('product.details');
 Route::get('/product/checkout', [FrontendController::class, 'checkout'])->name('checkout');
+Route::get('/shop', [FrontendController::class, 'shop'])->name('shop');
+Route::get('/about', [FrontendController::class, 'about'])->name('about');
+Route::get('/faq', [FrontendController::class, 'faq'])->name('faq');
 
 //category
 Route::get('/category', [CategoryController::class, 'category'])->name('category');
@@ -56,8 +63,8 @@ Route::post('/product/show',[ProductController::class, 'product_show'])->name('s
 Route::get('/products/inventory/{id}',[InventoryController::class, 'inventory'])->name('inventory');
 Route::post('/products/inventory_add',[InventoryController::class, 'inventory_add'])->name('add.inventory');
 Route::get('/products/inventory_delete/{id}',[InventoryController::class, 'inventory_delete'])->name('inventory.delete');
-// Sub-Category
 
+// Sub-Category
 Route::get('/sub-category', [SubCategoryController::class, 'sub_category'])->name('sub-category');
 Route::post('/sub-category/insert', [SubCategoryController::class, 'sub_category_insert'])->name('sub_category.insert');
 Route::post('/sub-category/update/{id}', [SubCategoryController::class, 'sub_category_update'])->name('sub_category.update');
@@ -86,7 +93,6 @@ Route::post('/product/tags/insert',[TagController::class, 'tags_insert'])->name(
 Route::get('/product/tags/delete/{id}',[TagController::class, 'tags_delete'])->name('tag.delete');
 
 //Brand
-
 Route::get('/brand', [BrandController::class, 'brand'])->name('brand');
 Route::post('/brand/insert', [BrandController::class, 'brand_insert'])->name('insert.brand');
 Route::get('/brand/delete/{id}', [BrandController::class, 'brand_delete'])->name('delete.brand');
@@ -112,9 +118,20 @@ Route::get('/user/register', [CustomerRegister::class, 'register'])->name('user.
 Route::get('/user/login', [CustomerRegister::class, 'user_login'])->name('user.login');
 Route::get('/user/logout', [CustomerRegister::class, 'user_logout'])->name('user.logout');
 Route::post('/user/login/post', [CustomerRegister::class, 'user_login_post'])->name('user.login.post');
-Route::post('/user/profile/update', [CustomerRegister::class, 'user_profile_update'])->name('user.profile.update');
+Route::post('/user/profile/update', [CustomerRegister::class, 'user_profile_update'])->name('user.profile.update')->middleware('customer');
 Route::post('/user/register/store', [CustomerRegister::class, 'register_store'])->name('register.store');
 Route::get('/user/profile', [CustomerRegister::class, 'user_profile'])->name('user.profile')->middleware('customer');
+
+//Customer Password Reset
+Route::get('/pass/reset/req', [CustomerRegister::class, 'pass_reset_req'])->name('pass.reset.req');
+Route::post('/pass/reset/req/send', [CustomerRegister::class, 'pass_reset_req_send'])->name('pass.reset.req.send');
+Route::get('/pass/reset/form/{token}', [CustomerRegister::class, 'pass_reset_form'])->name('pass.reset.form');
+Route::post('/pass/reset/update/{token}', [CustomerRegister::class, 'pass_reset_update'])->name('pass.reset.update');
+
+//Customer Email Verification
+Route::get('/customer/email/verify/{token}', [CustomerRegister::class, 'customer_email_verify'])->name('customer.email.verify');
+Route::get('/email/verify/req', [CustomerRegister::class, 'email_verify_req'])->name('email.verify.req');
+Route::post('/email/verify/req/send', [CustomerRegister::class, 'email_verify_req_send'])->name('email.verify.req.send');
 
 //add to cart
 Route::post('product/add_to_cart/{product_id}', [cartController::class, 'add_to_cart'])->name('add.cart');
@@ -152,10 +169,36 @@ Route::controller(StripePaymentController::class)->group(function(){
     Route::post('stripe/{id}', 'stripePost')->name('stripe.post');
 });
 
+//Social Login
+Route::get('/auth/github', [SocialLoginController::class, 'github_redirect'])->name('github.redirect');
+Route::get('/auth/github/callback', [SocialLoginController::class, 'github_callback']);
+// Google
+Route::get('/auth/google', [SocialLoginController::class, 'google_redirect'])->name('google.redirect');
+Route::get('/auth/google/callback', [SocialLoginController::class, 'google_callback']);
+
+
 //Orders
 Route::get('/orders' , [OrderController::class , 'orders'])->name('orders');
 Route::post('/order/status_change/{id}' , [OrderController::class , 'status_change'])->name('order.change.status');
 Route::post('/review/store/{id}' , [OrderController::class , 'review_store'])->name('review.store');
+
+//Exciting Offers
+Route::get('/exciting_offers',[ExcitingOffers::class, 'exciting_offer'])->name('exciting.offer');
+Route::post('/exciting_offers/update',[ExcitingOffers::class, 'exciting_offer_update'])->name('exciting.offer.update');
+Route::post('/exciting_offers2/update',[ExcitingOffers::class, 'exciting_offer2_update'])->name('exciting.offer2.update');
+
+//FAQ
+Route::get('/faq_list',[FaqController::class, 'faq_list'])->name('faq.list');
+Route::post('/faq/add',[FaqController::class, 'faq_add'])->name('add.faqs');
+Route::get('/faq/delete/{id}',[FaqController::class, 'faq_delete'])->name('faq.delete');
+Route::post('/faq/store',[FaqController::class, 'faq_store'])->name('store.faqs');
+Route::get('/faq_store/delete/{id}',[FaqController::class, 'faq_store_delete'])->name('faq_store.delete');
+
+//About
+Route::get('/about_page',[AboutController::class, 'about_page'])->name('about.page');
+Route::post('/about_page/update',[AboutController::class, 'about_update'])->name('about.update');
+
+
 
 
 require __DIR__.'/auth.php';

@@ -230,7 +230,7 @@
 				<p>The Mart</p>
 				<p>4517 Washington Ave. Manchter, <br> Kentucky 495</p>
 				<p>(208) 555-0112 <br>
-                    (704) 555-0127</p>
+                (704) 555-0127</p>
 			</div>
 			<span><img alt="" src="https://i.postimg.cc/GhRP5ZK1/Logos.png" width="100px"></span>
 		</header>

@@ -124,23 +124,21 @@
                                 <ul>
                                     <li><a href="compare.html"><i class="fi flaticon-right-and-left"></i><span>Compare</span></a>
                                     </li>
-                                    <li class="d-flex">
-                                        <a>
-                                            @auth('customer')
-                                            @if(Auth::guard('customer')->user()->photo == NULL)
-                                            <a class="ps-0" href="{{ route('user.profile') }}" style="cursor: pointer"><img src="{{ Avatar::create(Auth::guard('customer')->user()->name)->toBase64() }}" alt="profile_img" style="border-radius: 50% ;" height="30px" width="30px" class="me-3"></a>
-                                            @else                                            
-                                            <a class="ps-0" href="{{ route('user.profile') }}" style="cursor: pointer"><img src="{{ asset('uploads') }}/customer/{{ Auth::guard('customer')->user()->photo }}" alt="profile_img" style="border-radius: 50% ;" height="30px" width="30px" class="me-3"></a>
-                                            @endif
-                                            @else    
-                                            <a href="{{ route('user.profile') }}"><i class="fi flaticon-user-profile"></i></a>
-                                            @endauth
-                                            @auth('customer')
-                                            <a id="login-logout-border" href="{{ route('user.logout') }}"><span class="p-1">Logout</span></a>
-                                            @else
-                                            <a id="login-logout-border" href="{{ route('user.login') }}"><span>Login</span></a>
-                                            @endauth
-                                        </a>
+                                    <li class="d-flex ms-4">
+                                        @auth('customer')
+                                        @if(Auth::guard('customer')->user()->photo == NULL)
+                                        <a class="ps-0 pl-0" style="width: 30px" href="{{ route('user.profile') }}" style="cursor: pointer"><img src="{{ Avatar::create(Auth::guard('customer')->user()->name)->toBase64() }}" alt="profile_img" style="border-radius: 50% ;" height="30px" width="30px" class="me-3"></a>
+                                        @else
+                                        <a class="ps-0 pl-0" style="width: 30px" href="{{ route('user.profile') }}" style="cursor: pointer"><img src="{{ asset('uploads') }}/customer/{{ Auth::guard('customer')->user()->photo }}" alt="profile_img" style="border-radius: 50% ;" height="30px" width="30px" class="me-3"></a>
+                                        @endif
+                                        @else    
+                                        <a href="{{ route('user.profile') }}"><i class="fi flaticon-user-profile"></i></a>
+                                        @endauth
+                                        @auth('customer')
+                                        <a id="login-logout-border" href="{{ route('user.logout') }}"><span class="p-1">Logout</span></a>
+                                        @else
+                                        <a id="login-logout-border" href="{{ route('user.login') }}"><span>Login</span></a>
+                                        @endauth
                                     </li>
                                     <li>
                                         <div class="header-wishlist-form-wrapper">
@@ -288,12 +286,12 @@
                                         <li class="menu-item-has-children">
                                             <a href="{{ url('/') }}">Home</a>
                                         </li>
-                                        <li><a href="about.html">About</a></li>
+                                        <li><a href="{{ route('about') }}">About</a></li>
                                         <li class="menu-item-has-children">
-                                            <a href="#">Shop</a>
+                                            <a href="{{ route('shop') }}">Shop</a>
                                         </li>
                                         <li class="menu-item-has-children">
-                                            <a href="#">FAQ</a>
+                                            <a href="{{ route('faq') }}">FAQ</a>
                                         </li>
                                         <li><a href="contact.html">Contact</a></li>
                                     </ul>

@@ -68,8 +68,10 @@
                                 <div class="fromTitle">
                                     <h2>Signup</h2>
                                     <p>Sign into your pages account</p>
-                                    @if (session('pass_error'))                                        
+                                    @if (session('pass_error'))
                                     <div class="alert alert-danger">{{ session('pass_error') }}</div>
+                                    @elseif (session('register_success'))
+                                    <div class="alert alert-success">{{ session('register_success') }}</div>
                                     @endif
                                 </div>
                                 <div class="row">
@@ -103,6 +105,9 @@
                                         <div class="form-group">
                                             <label>Confirm Password</label>
                                             <input class="pwd3" type="password" placeholder="Your password here.." name="password_confirmation">
+                                            @error('password_confirmation')
+                                            <strong class="text-danger">{{ $message }}</strong>
+                                            @enderror
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default reveal2" type="button"><i class="ti-eye"></i></button>
                                             </span>
