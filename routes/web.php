@@ -23,21 +23,29 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\StripePaymentController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice');
-
+Route::get('/deals_of_the_day', [HomeController::class, 'deals_of_the_day'])->name('deals_of_the_day');
+Route::post('/product/deals',[HomeController::class, 'product_deals'])->name('deals.product');
+Route::get('/api/monthly-sales', [HomeController::class, 'getMonthlySales']);
 //FrontendController
 Route::get('/', [FrontendController::class, 'welcome'])->name('home');
 Route::post('/product/get_size', [FrontendController::class, 'get_size']);
 Route::post('product/get_stock', [FrontendController::class, 'get_stock']);
+Route::post('product/get_price', [FrontendController::class, 'get_price']);
+Route::post('product/old_price', [FrontendController::class, 'old_price']);
 Route::get('/product/details/{slug}', [FrontendController::class, 'product_details'])->name('product.details');
 Route::get('/product/checkout', [FrontendController::class, 'checkout'])->name('checkout');
 Route::get('/shop', [FrontendController::class, 'shop'])->name('shop');
 Route::get('/about', [FrontendController::class, 'about'])->name('about');
 Route::get('/faq', [FrontendController::class, 'faq'])->name('faq');
+Route::get('/recent', [FrontendController::class, 'recent'])->name('recent');
+Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
+Route::post('/contact/massage/store', [FrontendController::class, 'contact_massage_store'])->name('contact.massage.store');
 
 //category
 Route::get('/category', [CategoryController::class, 'category'])->name('category');
@@ -176,7 +184,6 @@ Route::get('/auth/github/callback', [SocialLoginController::class, 'github_callb
 Route::get('/auth/google', [SocialLoginController::class, 'google_redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [SocialLoginController::class, 'google_callback']);
 
-
 //Orders
 Route::get('/orders' , [OrderController::class , 'orders'])->name('orders');
 Route::post('/order/status_change/{id}' , [OrderController::class , 'status_change'])->name('order.change.status');
@@ -198,7 +205,10 @@ Route::get('/faq_store/delete/{id}',[FaqController::class, 'faq_store_delete'])-
 Route::get('/about_page',[AboutController::class, 'about_page'])->name('about.page');
 Route::post('/about_page/update',[AboutController::class, 'about_update'])->name('about.update');
 
-
+//Wishlist
+Route::get('/wishlist' , [WishlistController::class, 'wishlist'])->name('wishlist');
+Route::get('/wishlist/store/{id}' , [WishlistController::class, 'add_to_wishlist'])->name('add.to.wishlist');
+Route::get('/wishlist/delete/{id}' , [WishlistController::class, 'delete_wishlist'])->name('delete.wishlist');
 
 
 require __DIR__.'/auth.php';

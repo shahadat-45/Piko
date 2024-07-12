@@ -7209,6 +7209,11 @@ img {
       -ms-flex-direction: column;
           flex-direction: column;
   text-align: center;
+  img {
+    object-fit: contain;
+    max-width: 170px;
+    max-height: 96px;
+  }
 }
 
 @media (max-width: 1199px) {
@@ -7227,6 +7232,7 @@ img {
 
 .product-card .content {
   margin-left: 30px;
+  max-width: 170px;
 }
 
 @media (max-width: 1399px) {
@@ -8803,7 +8809,6 @@ img {
   position: relative;
   list-style: none;
 }
-
 .shop-section .shop-filter-wrap .shop-filter-item ul li label {
   padding: 8px 0;
   font-weight: 400;
@@ -8811,7 +8816,10 @@ img {
   line-height: 23px;
   color: #6F6F6F;
 }
-
+.shop-section .shop-filter-wrap .shop-filter-item ul li input[type=radio]:checked ~ label {
+  color: #000;
+  font-weight: 600;
+}
 .shop-section .shop-filter-wrap .shop-filter-item .shop-filter-search form div {
   position: relative;
   margin-top: 20px;

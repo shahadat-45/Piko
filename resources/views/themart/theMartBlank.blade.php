@@ -111,9 +111,8 @@
                                 </div>
                                 <div class="search-box">
                                     <div class="input-group">
-                                        <input type="search" class="form-control"
-                                            placeholder="What are you looking for?">
-                                        <button class="search-btn" type="submit"> <i class="fi flaticon-search"></i>
+                                        <input type="search" id="search_input" class="form-control" placeholder="What are you looking for?" value="{{ @$_GET['q'] }}">
+                                        <button class="search-btn" id="search_btn" type="button"> <i class="fi flaticon-search"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -147,47 +146,28 @@
                                             <div class="mini-wislist-content">
                                                 <button class="mini-cart-close"><i class="ti-close"></i></button>
                                                 <div class="mini-cart-items">
-                                                    <div class="mini-cart-item clearfix">
-                                                        <div class="mini-cart-item-image">
-                                                            <a href="product.html"><img src="{{ asset('TheMart') }}/assets/images/cart/img-1.jpg" alt></a>
-                                                        </div>
-                                                        <div class="mini-cart-item-des">
-                                                            <a href="product.html">Stylish Pink Coat</a>
-                                                            <span class="mini-cart-item-price">$150</span>
-                                                            <span class="mini-cart-item-quantity"><a href="#"><i
-                                                                        class="ti-close"></i></a></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mini-cart-item clearfix">
-                                                        <div class="mini-cart-item-image">
-                                                            <a href="product.html"><img
-                                                                    src="{{ asset('TheMart') }}/assets/images/cart/img-2.jpg"
-                                                                    alt></a>
-                                                        </div>
-                                                        <div class="mini-cart-item-des">
-                                                            <a href="product.html">Blue Bag</a>
-                                                            <span class="mini-cart-item-price">$120</span>
-                                                            <span class="mini-cart-item-quantity"><a href="#"><i
-                                                                        class="ti-close"></i></a></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mini-cart-item clearfix">
-                                                        <div class="mini-cart-item-image">
-                                                            <a href="product.html"><img
-                                                                    src="{{ asset('TheMart') }}/assets/images/cart/img-3.jpg"
-                                                                    alt></a>
-                                                        </div>
-                                                        <div class="mini-cart-item-des">
-                                                            <a href="product.html">Kids Blue Shoes</a>
-                                                            <span class="mini-cart-item-price">$120</span>
-                                                            <span class="mini-cart-item-quantity"><a href="#"><i
-                                                                        class="ti-close"></i></a></span>
-                                                        </div>
-                                                    </div>
+                                                    @php
+                                                        $wishlist = App\Models\Wishlist::where('customer_id' , Auth::guard('customer')->id())->get();
+                                                    @endphp
+                                                    @auth('customer')
+                                                       @foreach ($wishlist as $wishlist)
+                                                           <div class="mini-cart-item clearfix">
+                                                                <div class="mini-cart-item-image">
+                                                                    <a href="{{ route('product.details', $wishlist->rel_to_product->slug) }}"><img src="{{ asset('uploads') }}/product/{{ $wishlist->rel_to_product->thumbnail }}" alt></a>
+                                                                </div>
+                                                                <div class="mini-cart-item-des">
+                                                                    <a href="{{ route('product.details', $wishlist->rel_to_product->slug) }}">{{ $wishlist->rel_to_product->product_name }}</a>
+                                                                    <span class="mini-cart-item-price">${{ $wishlist->rel_to_product->rel_to_inventory->first()->after_discount }}</span>
+                                                                    <span class="mini-cart-item-quantity"><a href="{{ route('delete.wishlist',$wishlist->product_id) }}"><i
+                                                                                class="ti-close"></i></a></span>
+                                                                </div>
+                                                            </div>
+                                                       @endforeach 
+                                                    @endauth
                                                 </div>
                                                 <div class="mini-cart-action clearfix">
                                                     <div class="mini-btn">
-                                                        <a href="wishlist.html" class="view-cart-btn">View Wishlist</a>
+                                                        <a href="{{ route('wishlist') }}" class="view-cart-btn">View Wishlist</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -293,14 +273,14 @@
                                         <li class="menu-item-has-children">
                                             <a href="{{ route('faq') }}">FAQ</a>
                                         </li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="{{ route('contact') }}">Contact</a></li>
                                     </ul>
 
                                 </div><!-- end of nav-collapse -->
                             </div>
                             <div class="col-lg-2 col-md-1 col-1">
                                 <div class="header-right">
-                                    <a href="recent-view.html" class="recent-btn"><i class="fi flaticon-refresh"></i> 
+                                    <a href="{{ route('recent') }}" class="recent-btn"><i class="fi flaticon-refresh"></i> 
                                         <span>Recently Viewed</span>
                                     </a>
                                 </div>
@@ -459,6 +439,20 @@
     <script src="{{ asset('TheMart') }}/assets/js/jquery-plugin-collection.js"></script>
     <!-- Custom script for this template -->
     <script src="{{ asset('TheMart') }}/assets/js/script.js"></script>
+
     @yield('footer_script')
+    <script>
+        $('#search_btn').click(function(){
+            var keyword = $('#search_input').val();
+            var category_id = $('input:radio[class=category_id]:checked').val();
+            var col = $('input:radio[class=color_id]:checked').val();
+            var size = $('input:radio[class=size]:checked').val();
+            var min = $('#min').val();
+            var max = $('#max').val();
+            var sort = $('.sort').val();
+            var link = '{{ route('shop') }}' + '?q=' + keyword + '&ctd=' + category_id + '&min=' + min + '&max=' + max + '&col=' + col + '&size=' + size + '&sort=' + sort ;
+            window.location.href = link;
+        });
+    </script>
 </body>
 </html>

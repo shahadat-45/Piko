@@ -405,54 +405,65 @@ $(function() {
 
   // Monthly sales chart start
   if($('#monthly-sales-chart').length) {
-    var monthlySalesChart = document.getElementById('monthly-sales-chart').getContext('2d');
-      new Chart(monthlySalesChart, {
-        type: 'bar',
-        data: {
-          labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-          datasets: [{
-            label: 'Sales',
-            data: [150,110,90,115,125,160,190,140,100,110,120,120],
-            backgroundColor: colors.primary
-          }]
-        },
-        options: {
-          maintainAspectRatio: false,
-          legend: {
-            display: false,
-              labels: {
-                display: false
-              }
-          },
-          scales: {
-            xAxes: [{
-              display: true,
-              barPercentage: .3,
-              categoryPercentage: .6,
-              gridLines: {
-                display: false
+    if (document.getElementById('monthly-sales-chart')) {
+      fetch('/api/monthly-sales')
+          .then(response => response.json())
+          .then(data => {
+            const labels = data.map(item => getMonthName(item.month));
+            const salesData = data.map(item => item.total);
+            var monthlySalesChart = document.getElementById('monthly-sales-chart').getContext('2d');
+            new Chart(monthlySalesChart, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Sales',
+                  data: salesData,
+                  backgroundColor: colors.primary
+                }]
               },
-              ticks: {
-                fontColor: '#8392a5',
-                fontSize: 10
+              options: {
+                maintainAspectRatio: false,
+                legend: {
+                  display: false,
+                    labels: {
+                      display: false
+                    }
+                },
+                scales: {
+                  xAxes: [{
+                    display: true,
+                    barPercentage: .3,
+                    categoryPercentage: .6,
+                    gridLines: {
+                      display: false
+                    },
+                    ticks: {
+                      fontColor: '#8392a5',
+                      fontSize: 10
+                    }
+                  }],
+                  yAxes: [{
+                    gridLines: {
+                      color: gridLineColor
+                    },
+                    ticks: {
+                      fontColor: '#8392a5',
+                      fontSize: 10,
+                      min: 100,
+                      max: 80000,
+                    }
+                  }]
+                }
               }
-            }],
-            yAxes: [{
-              gridLines: {
-                color: gridLineColor
-              },
-              ticks: {
-                fontColor: '#8392a5',
-                fontSize: 10,
-                min: 80,
-                max: 200
-              }
-            }]
-          }
-        }
-      }
-    );
+            });
+          })
+        }    
   }
   // Monthly sales chart end
+  function getMonthName(month) {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return monthNames[month - 1];
+  }
 
 });

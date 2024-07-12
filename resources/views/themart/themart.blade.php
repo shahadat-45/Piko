@@ -138,10 +138,9 @@
                             @endphp
                             <div class="rating-product">
                                 @if ($avg != 0)
-                                 @for ($i=1; $i<=$avg; $i++)                                    
-                                <i class="fi flaticon-star"></i>
-                                @endfor
-                                @else
+                                    @for ($i=1; $i<=$avg; $i++)                                    
+                                        <i class="fi flaticon-star"></i>
+                                    @endfor
                                 @endif
                                 <span>{{ $reviews->count() }}</span>
                             </div>
@@ -157,7 +156,7 @@
                 </div>
                 @endforeach
                 <div class="more-btn">
-                    <a class="theme-btn-s2" href="product.html">View All</a>
+                    <a class="theme-btn-s2" href="{{ route('shop') }}">View All</a>
                 </div>
             </div>
         </div>
@@ -246,64 +245,48 @@
             </div>
         </div>
         <div class="row g-0">
+            @foreach ($deals_of_the_day as $product)
             <div class="col-lg-6 col-12">
                 <ul class="special-product">
                     <li>
                         <div class="product-item">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/special-product-1.jpg" alt="">
+                            <div class="image" style="width: 280px">
+                                <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="{{ $product->thumbnail }}">
                             </div>
                             <div class="text">
-                                <h2><a href="product-single.html">Jewelry Sets</a></h2>
+                                <h2><a href="{{ route('product.details' , $product->slug) }}">{{ Str::of($product->product_name)->limit(10) }}</a></h2>
+                                @php
+                                    $avg = 0;
+                                    $reviews = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->latest()->get();
+                                    $total_star = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->sum('star');
+                                    if ($reviews->count() != 0) {
+                                        $avg = $total_star / $reviews->count() ;
+                                    }
+                                    else {
+                                        $avg = 0;
+                                    }
+                                @endphp
                                 <div class="rating-product">
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <span>130</span>
+                                    @if ($avg != 0)
+                                        @for ($i=1; $i<=$avg; $i++)                                    
+                                            <i class="fi flaticon-star"></i>
+                                        @endfor
+                                    @endif
+                                    <span>{{ $reviews->count() }}</span>
                                 </div>
                                 <div class="price">
-                                    <span class="present-price">$120.00</span>
-                                    <del class="old-price">$200.00</del>
+                                    <span class="present-price">${{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
+                                    <del class="old-price">${{ $product->rel_to_inventory->first()->new_price ?? '' }}</del>
                                 </div>
                                 <div class="shop-btn">
-                                    <a class="theme-btn-s2" href="product.html">Shop Now</a>
+                                    <a class="theme-btn-s2" href="{{ route('product.details' , $product->slug) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
                     </li>
                 </ul>
-            </div>
-            <div class="col-lg-6 col-12">
-                <ul class="special-product">
-                    <li>
-                        <div class="product-item">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/special-product-2.jpg" alt="">
-                            </div>
-                            <div class="text">
-                                <h2><a href="product-single.html">White Shoe</a></h2>
-                                <div class="rating-product">
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <i class="fi flaticon-star"></i>
-                                    <span>150</span>
-                                </div>
-                                <div class="price">
-                                    <span class="present-price">$100.00</span>
-                                    <del class="old-price">$150.00</del>
-                                </div>
-                                <div class="shop-btn">
-                                    <a class="theme-btn-s2" href="product.html">Shop Now</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            </div>    
+            @endforeach
         </div>
     </div>
 </section>
@@ -320,30 +303,47 @@
             </div>
         </div>
         <div class="trendin-slider owl-carousel">
+            @foreach ($trendingProducts as $product)
             <div class="product-item">
                 <div class="image">
-                    <img src="{{ asset('TheMart') }}/assets/images/trending-product/1.png" alt="">
-                    <div class="tag new">New</div>
+                    <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="" height="175px" style="object-fit: contain">
+                    @if ($product->total > 5)
+                    <div class="tag sale">Sale</div>                        
+                    @else
+                    <div class="tag new">New</div>                        
+                    @endif
                 </div>
                 <div class="text">
-                    <h2><a href="product-single.html">Pink Baby Shoes</a></h2>
+                    <h2><a href="{{ route('product.details' , $product->slug) }}">{{ Str::of($product->product_name)->limit(20) }}</a></h2>
+                    @php
+                        $avg = 0;
+                        $reviews = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->latest()->get();
+                        $total_star = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->sum('star');
+                        if ($reviews->count() != 0) {
+                            $avg = $total_star / $reviews->count() ;
+                        }
+                        else {
+                            $avg = 0;
+                        }
+                    @endphp
                     <div class="rating-product">
-                        <i class="fi flaticon-star"></i>
-                        <i class="fi flaticon-star"></i>
-                        <i class="fi flaticon-star"></i>
-                        <i class="fi flaticon-star"></i>
-                        <i class="fi flaticon-star"></i>
-                        <span>130</span>
+                        @if ($avg != 0)
+                            @for ($i=1; $i<=$avg; $i++)                                    
+                                <i class="fi flaticon-star"></i>
+                            @endfor
+                        @endif
+                        <span>{{ $reviews->count() }}</span>
                     </div>
                     <div class="price">
-                        <span class="present-price">$120.00</span>
-                        <del class="old-price">$200.00</del>
+                        <span class="present-price">${{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
+                        <del class="old-price">${{ $product->rel_to_inventory->first()->new_price ?? '' }}</del>
                     </div>
                     <div class="shop-btn">
-                        <a class="theme-btn-s2" href="product.html">Shop Now</a>
+                        <a class="theme-btn-s2" href="{{ route('product.details' , $product->slug) }}">Shop Now</a>
                     </div>
                 </div>
             </div>
+            @endforeach
             <div class="product-item">
                 <div class="image">
                     <img src="{{ asset('TheMart') }}/assets/images/trending-product/2.png" alt="">
@@ -453,214 +453,121 @@
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="highlight-wrap">
                     <h2>Top Selling</h2>
+                    @foreach ($trendingProducts as $product)
                     <div class="product-card">
                         <div class="card-image">
                             <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/top-selling/1.png" alt="">
+                                <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="{{ $product->thumbnail }}">
                             </div>
                         </div>
                         <div class="content">
-                            <h3><a href="product.html">Yellow Ladies Bag </a></h3>
+                            <h3><a href="{{ route('product.details' , $product->slug) }}">{{ Str::of($product->product_name)->limit(20) }}</a></h3>
+                            @php
+                                $avg = 0;
+                                $reviews = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->latest()->get();
+                                $total_star = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->sum('star');
+                                if ($reviews->count() != 0) {
+                                    $avg = $total_star / $reviews->count() ;
+                                }
+                                else {
+                                    $avg = 0;
+                                }
+                            @endphp
                             <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>130</span>
+                                @if ($avg != 0)
+                                    @for ($i=1; $i<=$avg; $i++)                                    
+                                        <i class="fi flaticon-star"></i>
+                                    @endfor
+                                @endif
+                                <span>{{ $reviews->count() }}</span>
                             </div>
                             <div class="price">
-                                <span class="present-price">$120.00</span>
-                                <del class="old-price">$200.00</del>
+                                <span class="present-price">${{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
+                                <del class="old-price">${{ $product->rel_to_inventory->first()->new_price ?? '' }}</del>
                             </div>
                         </div>
                     </div>
-                    <div class="product-card">
-                        <div class="card-image">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/top-selling/2.png" alt="">
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h3><a href="product.html">Pink Shoes</a></h3>
-                            <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>130</span>
-                            </div>
-                            <div class="price">
-                                <span class="present-price">$120.00</span>
-                                <del class="old-price">$200.00</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="card-image">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/top-selling/3.png" alt="">
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h3><a href="product.html">Parple Pant</a></h3>
-                            <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>130</span>
-                            </div>
-                            <div class="price">
-                                <span class="present-price">$120.00</span>
-                                <del class="old-price">$200.00</del>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="highlight-wrap">
                     <h2>Recently added</h2>
+                    @foreach ($products as $product)
                     <div class="product-card">
                         <div class="card-image">
                             <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/recently-added/1.png" alt="">
+                                <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="{{ $product->thumbnail }}">
                             </div>
                         </div>
                         <div class="content">
-                            <h3><a href="product.html">Kids Shoes</a></h3>
+                            @php
+                                $avg = 0;
+                                $reviews = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->latest()->get();
+                                $total_star = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->sum('star');
+                                if ($reviews->count() != 0) {
+                                    $avg = $total_star / $reviews->count() ;
+                                }
+                                else {
+                                    $avg = 0;
+                                }
+                            @endphp
+                            <h3><a href="{{ route('product.details' , $product->slug) }}">{{ Str::of($product->product_name)->limit(25) }}</a></h3>
                             <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>120</span>
+                                @if ($avg != 0)
+                                    @for ($i=1; $i<=$avg; $i++)                                    
+                                        <i class="fi flaticon-star"></i>
+                                    @endfor
+                                @endif
+                                <span>{{ $reviews->count() }}</span>
                             </div>
                             <div class="price">
-                                <span class="present-price">$120.00</span>
-                                <del class="old-price">$150.00</del>
+                                <span class="present-price">${{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
+                                <del class="old-price">${{ $product->rel_to_inventory->first()->new_price ?? '' }}</del>
                             </div>
                         </div>
                     </div>
-                    <div class="product-card">
-                        <div class="card-image">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/recently-added/2.png" alt="">
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h3><a href="product.html">Stylish Earrings</a></h3>
-                            <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>230</span>
-                            </div>
-                            <div class="price">
-                                <span class="present-price">$150.00</span>
-                                <del class="old-price">$200.00</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="card-image">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/recently-added/3.png" alt="">
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h3><a href="product.html">Yellow Hats</a></h3>
-                            <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>130</span>
-                            </div>
-                            <div class="price">
-                                <span class="present-price">$170.00</span>
-                                <del class="old-price">$250.00</del>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="highlight-wrap">
                     <h2>Top Rated</h2>
+                    @foreach ($top_rated as $product)
                     <div class="product-card">
                         <div class="card-image">
                             <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/top-rated/1.png" alt="">
+                                <img src="{{ asset('uploads') }}/product/{{ $product->thumbnail }}" alt="{{ $product->thumbnail }}">
                             </div>
                         </div>
                         <div class="content">
-                            <h3><a href="product.html">Kids Shoes</a></h3>
+                            @php
+                                $avg = 0;
+                                $reviews = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->latest()->get();
+                                $total_star = App\Models\OrderedProduct::where('product_id' , $product->id)->whereNotNull('review')->sum('star');
+                                if ($reviews->count() != 0) {
+                                    $avg = $total_star / $reviews->count() ;
+                                }
+                                else {
+                                    $avg = 0;
+                                }
+                            @endphp
+                            <h3><a href="{{ route('product.details' , $product->slug) }}">{{ Str::of($product->product_name)->limit(25) }}</a></h3>
                             <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>120</span>
+                                @if ($avg != 0)
+                                    @for ($i=1; $i<=$avg; $i++)                                    
+                                        <i class="fi flaticon-star"></i>
+                                    @endfor
+                                @endif
+                                <span>{{ $reviews->count() }}</span>
                             </div>
                             <div class="price">
-                                <span class="present-price">$120.00</span>
-                                <del class="old-price">$150.00</del>
+                                <span class="present-price">${{ $product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
+                                <del class="old-price">${{ $product->rel_to_inventory->first()->new_price ?? '' }}</del>
                             </div>
                         </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="card-image">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/top-rated/2.png" alt="">
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h3><a href="product.html">Stylish Earrings</a></h3>
-                            <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>230</span>
-                            </div>
-                            <div class="price">
-                                <span class="present-price">$150.00</span>
-                                <del class="old-price">$200.00</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="card-image">
-                            <div class="image">
-                                <img src="{{ asset('TheMart') }}/assets/images/top-rated/3.png" alt="">
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h3><a href="product.html">Yellow Hats</a></h3>
-                            <div class="rating-product">
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <i class="fi flaticon-star"></i>
-                                <span>130</span>
-                            </div>
-                            <div class="price">
-                                <span class="present-price">$170.00</span>
-                                <del class="old-price">$250.00</del>
-                            </div>
-                        </div>
-                    </div>
+                    </div>  
+                    @endforeach                    
                 </div>
             </div>
         </div>

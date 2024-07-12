@@ -1054,65 +1054,67 @@
     /*------------------------------------------
         = CONTACT FORM SUBMISSION
     -------------------------------------------*/
-    if ($("#contact-form-main").length) {
-        $("#contact-form-main").validate({
-            rules: {
-                name: {
-                    required: true,
-                    minlength: 2
-                },
+    // if ($("#contact-form-main").length) {
+    //     $("#contact-form-main").validate({
+    //         rules: {
+    //             name: {
+    //                 required: true,
+    //                 minlength: 2
+    //             },
 
-                email: "required",
+    //             email: "required",
 
-                adress: "required",
+    //             adress: "required",
 
-                name: "required",
+    //             name: "required",
 
-                service: "required",
+    //             service: "required",
 
-                note: "required",
+    //             note: "required",
 
-                subject: {
-                    required: true
-                }
+    //             subject: {
+    //                 required: true
+    //             }
 
 
-            },
+    //         },
 
-            messages: {
-                name: "Please enter your name",
-                email: "Please enter your email address",
-                adress: "Please enter your adress",
-                service: "Please select your contact service",
-                note: "Please enter your comment"
-            },
+    //         messages: {
+    //             name: "Please enter your name",
+    //             email: "Please enter your email address",
+    //             adress: "Please enter your adress",
+    //             service: "Please select your contact service",
+    //             note: "Please enter your comment"
+    //         },
 
-            submitHandler: function (form) {
-                $.ajax({
-                    type: "POST",
-                    url: "mail-contact.php",
-                    data: $(form).serialize(),
-                    success: function () {
-                        $("#loader").hide();
-                        $("#success").slideDown("slow");
-                        setTimeout(function () {
-                            $("#success").slideUp("slow");
-                        }, 3000);
-                        form.reset();
-                    },
-                    error: function () {
-                        $("#loader").hide();
-                        $("#error").slideDown("slow");
-                        setTimeout(function () {
-                            $("#error").slideUp("slow");
-                        }, 3000);
-                    }
-                });
-                return false; // required to block normal submit since you used ajax
-            }
-
-        });
-    }
+    //         submitHandler: function (form) {
+    //             $.ajax({
+    //                 type: "POST",
+    //                 url: "/contact/massage/store",
+    //                 data: $(form).serialize(),
+    //                 success: function (response) {
+    //                     $("#loader").hide();
+    //                     $("#success").slideDown("slow");
+    //                     setTimeout(function () {
+    //                         $("#success").slideUp("slow");
+    //                     }, 3000);
+    //                     form.reset();
+    //                 },
+    //                 error: function (xhr, status, error) {
+    //                     console.log("XHR: ", xhr);
+    //                     console.log("Status: ", status);
+    //                     console.log("Error: ", error);
+    //                     $("#loader").hide();
+    //                     $("#error").slideDown("slow");
+    //                     setTimeout(function () {
+    //                         $("#error").slideUp("slow");
+    //                     }, 3000);
+    //                 }
+    //             });
+    //             return false; // required to block normal submit since you used ajax
+    //         }
+    //     });
+    // }
 
     /*------------------------------------------
         = CONTACT FORM SUBMISSION2

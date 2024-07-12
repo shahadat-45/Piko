@@ -119,7 +119,15 @@
                                     @else
                                     <a href="#" class="theme-btn-s2">Add to cart</a>
                                     @endauth
+                                    @auth('customer')
+                                    @if (App\Models\Wishlist::where('product_id' , $products->id)->where('customer_id', Auth::guard('customer')->id())->exists())
+                                    <a href="{{ route('delete.wishlist', $products->id) }}" style="background: #83B735; color:white; border:1px solid transparent" class="wl-btn"><i class="fi flaticon-heart"></i></a>                                        
+                                    @else
+                                    <a href="{{ route('add.to.wishlist', $products->id) }}" class="wl-btn"><i class="fi flaticon-heart"></i></a>
+                                    @endif
+                                    @else
                                     <a href="#" class="wl-btn"><i class="fi flaticon-heart"></i></a>
+                                    @endauth
                                 </div>
                                 <ul class="important-text">
                                     <li class="stock"></li>
@@ -255,7 +263,7 @@
                                                                 <div class="comment-image">
                                                                     @if($review->rel_to_customer->photo == NULL)
                                                                         <img src="{{ Avatar::create($review->rel_to_customer->name)->toBase64() }}" width="80"/>
-                                                                        @else                                                                        
+                                                                    @else                                                                        
                                                                         <img src="{{ asset('uploads/customer') }}/{{ $review->rel_to_customer->photo }}" width="80">
                                                                     @endif
                                                                 </div>
@@ -266,7 +274,7 @@
                                                                         <h4>{{ $review->rel_to_customer->name }}</h4>
                                                                         <div class="rating-product">
                                                                             @for ($i=1; $i<=$review->star ; $i++)                                                                                
-                                                                            <i class="fi flaticon-star"></i>
+                                                                                <i class="fi flaticon-star"></i>
                                                                             @endfor
                                                                         </div>
                                                                         <span class="comments-date">December 30, 2022 at 3:12 pm</span>
@@ -384,13 +392,24 @@
                                 </div>
                                 <div class="text">
                                     <h2><a href="{{ route('product.details' , $rel_product->slug) }}">{{ $rel_product->product_name }}</a></h2>
+                                    @php
+                                        $avg = 0;
+                                        $reviews = App\Models\OrderedProduct::where('product_id' , $rel_product->id)->whereNotNull('review')->latest()->get();
+                                        $total_star = App\Models\OrderedProduct::where('product_id' , $rel_product->id)->whereNotNull('review')->sum('star');
+                                        if ($reviews->count() != 0) {
+                                            $avg = $total_star / $reviews->count() ;
+                                        }
+                                        else {
+                                            $avg = 0;
+                                        }
+                                    @endphp
                                     <div class="rating-product">
-                                        <i class="fi flaticon-star"></i>
-                                        <i class="fi flaticon-star"></i>
-                                        <i class="fi flaticon-star"></i>
-                                        <i class="fi flaticon-star"></i>
-                                        <i class="fi flaticon-star"></i>
-                                        <span>130</span>
+                                        @if ($avg != 0)
+                                            @for ($i=1; $i<=$avg; $i++)                                    
+                                                <i class="fi flaticon-star"></i>
+                                            @endfor
+                                        @endif
+                                        <span>{{ $reviews->count() }}</span>
                                     </div>
                                     <div class="price">
                                         <span class="present-price">${{ $rel_product->rel_to_inventory->first()->after_discount ?? 'soon' }}</span>
@@ -442,6 +461,22 @@
                         data: {'color_id': color_id, 'product_id':product_id , 'size_id': size_id},
                         success: function(data){
                             $('.stock').html(data);
+                        }
+                        })
+                        $.ajax({
+                        'url': '/product/get_price',
+                        'type': 'POST',
+                        data: {'color_id': color_id, 'product_id':product_id , 'size_id': size_id},
+                        success: function(data){
+                            $('.present-price').html(data);
+                        }
+                        })
+                        $.ajax({
+                        'url': '/product/old_price',
+                        'type': 'POST',
+                        data: {'color_id': color_id, 'product_id':product_id , 'size_id': size_id},
+                        success: function(data){
+                            $('.old-price').html(data);
                         }
                         })
                     })

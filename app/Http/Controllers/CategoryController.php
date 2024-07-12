@@ -85,7 +85,7 @@ class CategoryController extends Controller
 
     function trashed_categories(){
         $categories = Category::onlyTrashed()->get();
-        return view('backend.trash_category', compact('categories'));
+        return view('category.trash_category', compact('categories'));
     }
 
     function trash_deleted($id){
