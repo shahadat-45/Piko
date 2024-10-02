@@ -49,10 +49,16 @@
                 //customer
                   $month2 = App\Models\Customer::where('created_at', '>=', now()->subDays(60))->count();
                   $month1 = App\Models\Customer::where('created_at', '>=', now()->subDays(30))->count();
-                  $prev = $month2 - $month1;
-                  $month1_100 = $month1 / 100;
-                  $percent = $month1 - $prev;
-                  $total = $percent / $month1_100;
+                  if ($month2 != 0 && $month1 != 0) {                    
+                    $prev = $month2 - $month1;
+                    $month1_100 = $month1 / 100;
+                    $percent = $month1 - $prev;
+                    $total = $percent / $month1_100;
+                  }else {
+                    $prev = 0;
+                    $total = 0;
+                  }
+
                   //order product
                   $month2_1 = App\Models\Orders::where('created_at', '>=', now()->subDays(60))->count();
                   $month1_1 = App\Models\Orders::where('created_at', '>=', now()->subDays(30))->count();
@@ -72,12 +78,12 @@
                   <div class="d-flex align-items-baseline">
                     @if ($month1 > $prev)
                       <p class="text-success">
-                        <span>+{{ round($total) }}%</span>
+                        <span>+{{ round($total) ?? 0 }}%</span>
                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                       </p>
                     @else
                       <p class="text-danger">
-                        <span>{{ round($total) }}%</span>
+                        <span>{{ round($total) ?? 0 }}%</span>
                         <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                       </p>
                     @endif                    
